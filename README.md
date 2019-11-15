@@ -6,3 +6,14 @@ The system works like this: run the shell script **generate-perrno_h.sh**, and i
 and<br>
 ```const char *strerrno(int errno)```
 
+
+*perrno* is called with the errno as the argument, and returns a pointer to a NULL terminated const static string of the errno mnemonic.  For example, if the errno is 4, the returned pointer would point to the string "EINTR".
+
+RETURN VALUE
+
+If no mnemonic can be found for this errno, for instance it's an invalid errno like 0 or 5600, then the function returns NULL.
+
+
+*strerrno* is the same as *perrno* except that the pointer returned points to the error message that is possibly the same as returned by _perror_ C library function, except that it can't get messed by in a multi-threaded program and such.
+
+Both of these functions are MT Safe.
