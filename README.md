@@ -16,4 +16,4 @@ If no mnemonic can be found for this errno, for instance it's an invalid errno l
 
 *strerrno* is the same as *perrno* except that the pointer returned points to the error message that is possibly the same as returned by _perror_ C library function, except that it can't get messed by in a multi-threaded program and such.
 
-Both of these functions are MT Safe.
+Both of these functions are MT Safe.  The pointers returned can be passed as arguments to other functions, and whatnot, without fear.  They are pointers to const char arrays, so hopefully users of this code are smart enough not to change the strings themselves.
