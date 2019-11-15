@@ -7,7 +7,7 @@ and<br>
 ```const char *strerrno(int errno)```
 
 
-*perrno* is called with the errno as the argument, and returns a pointer to a NULL terminated const static string of the errno mnemonic.  For example, if the errno is 4, the returned pointer would point to the string "EINTR".
+*perrno* is called with the errno as the argument, and returns a pointer to a NULL byte terminated const static string of the errno mnemonic.  For example, if the errno is 4, the returned pointer would point to the string "EINTR".
 
 RETURN VALUE
 
