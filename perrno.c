@@ -1,3 +1,15 @@
+
+/*
+ * Copyright Andrew Sharp andy@tigerand.com 2018-2019, All Rights Reserved.
+ */
+
+/*
+ * both these functions are multi-thread safe (MT-Safe)
+ */
+
+/*
+ * return a pointer to a static string that is the errno mnemonic
+ */
  const char *
 perrno(int erg)
 {
@@ -10,6 +22,10 @@ perrno(int erg)
 		return NULL;
 	}
 }
+
+/*
+ * return a pointer to a static string that is message string
+ */
  const char *
 strerrno(int erg)
 {

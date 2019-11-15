@@ -1,5 +1,7 @@
 #!/bin/bash
 
+COPYRIGHT="Copyright Andrew Sharp andy@tigerand.com 2018-2019, All Rights Reserved."
+
 _max()
 {
 	if [ "$1" -gt "$2" ] ; then
@@ -13,6 +15,11 @@ ARCH_ENOFILE=`dpkg-architecture -q DEB_HOST_GNU_TYPE`/bits/errno.h
 
 ENO_FLIST="errno.h bits/errno.h asm-generic/errno-base.h asm-generic/errno.h $ARCH_ENOFILE"
 
+# some systems don't have a symlink from ../bits to ../ARCH/bits
+if [ ! -d /usr/include/bits ] ; then
+	ENO_FLIST=`echo $ENO_FLIST | sed 's% bits/errno.h%%'`
+fi
+
 declare -A ERNAMES
 declare -A ERSTRS
 
@@ -21,7 +28,20 @@ declare -i T SN SS
 SN=1
 SS=1
 
-#set -x
+# isolate the directory where this code resides
+PDIR=`dirname $0`
+
+
+cat >perrno.h <<COPYRIGHTMSG
+/*
+ * $COPYRIGHT
+ */
+
+COPYRIGHTMSG
+
+
+# grep the mnemonics out of the header files and into our code
+
 egrep '#[[:space:]]*define[[:space:]]+E' /usr/include/${ENO_FLIST// / /usr/include/} |
 	sed 's/^.*define[[:space:]]\+//'  |
 	while read EMAC ENO RESTO ; do
@@ -35,7 +55,7 @@ egrep '#[[:space:]]*define[[:space:]]+E' /usr/include/${ENO_FLIST// / /usr/inclu
 		fi
 		# just write the whole file anew for each friggin definition, because
 		# while is executed in a subshell
-		echo "static int _ernames_unitialized = 1;" >perrno.h
+		echo "static int _ernames_unitialized = 1;" >>perrno.h
 		echo "static int _erstrings_unitialized = 1;" >>perrno.h
 		echo "#define N_ERNAMES ${SN}" >>perrno.h
 		echo "#define N_ERSTRINGS ${SS}" >>perrno.h
@@ -72,4 +92,5 @@ cat perrno-name-initializers perrno-string-initializers >> perrno.h
 rm -f edefines-file perrno-name-initializers perrno-string-initializers
 
 echo >> perrno.h
-cat perrno.c >> perrno.h
+cat "$PDIR/perrno.c" >> perrno.h
+
